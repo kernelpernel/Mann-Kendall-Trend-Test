@@ -11,9 +11,9 @@ import scipy
 import statistics
 
 
-def read_data():
+def read_data(filename):
     # Could probably change this to read through all files in a folder
-    data = pd.DataFrame(pd.read_csv('Excavation Damages.csv'))
+    data = pd.DataFrame(pd.read_csv(filename))
 
     return data
 
@@ -41,7 +41,7 @@ def calculate_test_statistics(timeseries_list):
         j = i + 1
 
         while j < n:
-            entry = sign(items[j] - item)
+            entry = sign(timeseries_list[j] - item)
             results.append(entry)
             j += 1
 
@@ -131,26 +131,35 @@ def analyze_trend(stats_dict):
                 print('\n')
 
 
-data = read_data()
+def MKtest(data):
 
-column_stats = {}
+    column_stats = {}
 
-for column, values in data.items():
-    if column == 'Year':
-        X = list(values.values)
-        continue
-    else:
-        values.dropna(inplace=True)
-        items = list(values.values)
-        S, tau = calculate_test_statistics(items)
-        # The z-stat only valid if n > 10. Will build in later if needed. Some data sets have n = 10... will just
-        # assume for now that they meet the requirements for this
-        sigma_s = calculate_sigma_s(items)
-        z = calculate_Z_statistic(S, sigma_s)
-        p = calculate_p_value(z)
-        CF = 1-p
-        CoV = statistics.stdev(items) / statistics.mean(items)
-        entry = {column: [S, tau, sigma_s, z, CF, p, CoV]}
-        column_stats.update(entry)
+    for column, values in data.items():
+        if column == 'Year':
+            X = list(values.values)
+            continue
+        else:
+            values.dropna(inplace=True)
+            items = list(values.values)
+            S, tau = calculate_test_statistics(items)
+            # The z-stat only valid if n > 10. Will build in later if needed. Some data sets have n = 10... will just
+            # assume for now that they meet the requirements for this
+            sigma_s = calculate_sigma_s(items)
+            z = calculate_Z_statistic(S, sigma_s)
+            p = calculate_p_value(z)
+            CF = 1-p
+            CoV = statistics.stdev(items) / statistics.mean(items)
+            entry = {column: [S, tau, sigma_s, z, CF, p, CoV]}
+            column_stats.update(entry)
 
-analyze_trend(column_stats)
+    return column_stats
+
+
+data1 = read_data(filename='Excavation Damages.csv')
+column_stats1 = MKtest(data1)
+analyze_trend(column_stats1)
+
+data2 = read_data(filename='In House Excavation Damages.csv')
+column_stats2 = MKtest(data2)
+analyze_trend(column_stats2)
