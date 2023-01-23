@@ -5,7 +5,6 @@ Author: Ethan Purnell
 Date: 1/23/23
 """
 
-import pandas
 import pandas as pd
 
 
@@ -17,6 +16,7 @@ def read_data():
 
 # def build_selection_menu(): would like to use this to read the columns and allow the user to choose which one they
 # get the test info for
+
 
 def sign(x):
     if x > 0:
