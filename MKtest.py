@@ -155,11 +155,7 @@ def MKtest(data):
 
     return column_stats
 
-
-data1 = read_data(filename='Excavation Damages.csv')
-column_stats1 = MKtest(data1)
-analyze_trend(column_stats1)
-
-data2 = read_data(filename='In House Excavation Damages.csv')
-column_stats2 = MKtest(data2)
-analyze_trend(column_stats2)
+f = "$INSERT FILE HERE$"
+data = read_data(filename=f)
+column_stats = MKtest(data)
+analyze_trend(column_stats)
