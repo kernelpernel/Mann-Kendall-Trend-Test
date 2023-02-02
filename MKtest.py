@@ -11,9 +11,13 @@ import scipy
 import statistics
 
 
-def read_data(filename):
+def read_data(filename, sheet=0):
     # Could probably change this to read through all files in a folder
-    data = pd.DataFrame(pd.read_csv(filename))
+    if '.csv' in filename:
+        data = pd.DataFrame(pd.read_csv(filename))
+
+    elif '.xlsx' in filename:
+        data = pd.DataFrame(pd.read_excel(filename, sheet_name=sheet, index_col=0, header=0))
 
     return data
 
@@ -68,7 +72,7 @@ def calculate_Z_statistic(S, sigma_s):
         return (S + 1) / sigma_s
 
     else:
-        return 'tie'
+        return 0
 
 
 def calculate_p_value(z, one_tailed=True):
@@ -156,10 +160,7 @@ def MKtest(data):
     return column_stats
 
 
-data1 = read_data(filename='Excavation Damages.csv')
-column_stats1 = MKtest(data1)
-analyze_trend(column_stats1)
-
-data2 = read_data(filename='In House Excavation Damages.csv')
-column_stats2 = MKtest(data2)
-analyze_trend(column_stats2)
+data = read_data('$FILENAME$', sheet='$SHEET_NAME$')
+# print(data.to_string())
+column_stats = MKtest(data)
+analyze_trend(column_stats)
