@@ -39,15 +39,17 @@ def sign(x):
 def calculate_test_statistics(timeseries_list):
     n = len(timeseries_list)
     results = []
+    i = 0
 
     for item in timeseries_list:
-        i = timeseries_list.index(item)
         j = i + 1
 
         while j < n:
             entry = sign(timeseries_list[j] - item)
             results.append(entry)
             j += 1
+
+        i += 1
 
     S = sum(results)
     tau_denom = (n * (n - 1)) / 2
@@ -153,14 +155,15 @@ def MKtest(data):
             z = calculate_Z_statistic(S, sigma_s)
             p = calculate_p_value(z)
             CF = 1-p
-            CoV = statistics.stdev(items) / statistics.mean(items)
+            mean = sum(items) / len(items)
+            CoV = statistics.stdev(items) / mean
             entry = {column: [S, tau, sigma_s, z, CF, p, CoV]}
             column_stats.update(entry)
 
     return column_stats
 
 
-data = read_data('$FILENAME$', sheet='$SHEET_NAME$')
-# print(data.to_string())
+data = read_data('$FILENAME$')
+data = data.iloc[5:, :]
 column_stats = MKtest(data)
 analyze_trend(column_stats)
